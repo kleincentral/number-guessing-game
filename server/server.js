@@ -13,6 +13,35 @@ app.use(express.static('server/public'));
 app.use(express.json());
 
 
+// Code for Random
+
+let random = callRand();
+
+function callRand() {
+  let rand = Math.random()*24+1
+  rand = Math.round(rand)
+  console.log(rand)
+  return rand
+}
+
+function compareValues(array) {
+  let returnArray = {}
+  for(let index of array) {
+    if (index > random){
+      returnArray[index] = 'higher'
+    }
+    else if (index < random) {
+      returnArray[index] = 'lower'
+    }
+    else{
+      returnArray[index] = 'equal'
+    }
+  }
+  return returnArray
+}
+
+
+
 // GET & POST Routes go here
 
 app.get('/highorlow', (req, res) => {
@@ -21,6 +50,9 @@ app.get('/highorlow', (req, res) => {
 
 app.post('/highorlow', (req,res)=> {
   console.log('Info recieved!')
+  console.log(req.body)
+  console.log(req.body.arrayToPush)
+  console.log(compareValues(req.body.arrayToPush))
 })
 
 
