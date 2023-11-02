@@ -5,11 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Guess A Number!</title>
-  <script src="scripts/client.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script defer src="scripts/client.js"></script>
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <h1>YOUR GAME HERE!</h1>
+
+    <h2>Guesses</h2>
+    <form>
+      <input type="number"
+      placeholder="Leo"
+      id="guess1">
+      <input type="number"
+      placeholder="Braden"
+      id="guess2">
+      <input type="number"
+      placeholder="Essie"
+      id="guess3">
+      <input type="number"
+      placeholder="Walker"
+      id="guess4">
+      <input type="number"
+      placeholder="Sean"
+      id="guess5">
+      <input type="number"
+      placeholder="Mark"
+      id="guess6">
+      <button onclick="pushGuesses(event)">Guess</button>
+    </form>
+    <ul id="guessContent">
+      <lr>
+        <lh>Leo</lh>
+        <lh></lh>
+        <lh>Braden</lh>
+        <lh></lh>
+        <lh>Essie</lh>
+        <lh></lh>
+        <lh>Walker</lh>
+        <lh></lh>
+        <lh>Sean</lh>
+        <lh></lh>
+        <lh>Mark</lh>
+        <lh></lh>
+      </lr>
+    </ul>
 </body>
 </html>
