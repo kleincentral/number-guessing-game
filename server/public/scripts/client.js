@@ -2,9 +2,15 @@ function onReady() {
   console.log("JavaScript is loaded!")
 }
 
+//need a variable on the global scale.
+let guessCount = 1
+
 function callRandom() {
+  //sets the min and max of the axios to get the random number at the end.
   min = document.getElementById('min').value
   max = document.getElementById('max').value
+
+  //sets HTML content to what the page should look like
   document.getElementById('whereShitGo').innerHTML =
   `<h1>YOUR GAME HERE!</h1>
 
@@ -47,6 +53,8 @@ function callRandom() {
       <td></td>
     </tr>
   </table>`
+
+  //post to send the min and max of our random range to the server
   axios({
     method: 'POST',
     url: '/setrand',
@@ -55,14 +63,18 @@ function callRandom() {
       value2: max
     }
   }).then(function(response) {
+    //no return, but lets us know our random number was set.
     console.log("Random Number Set!");
   })
 
 }
 
 function resetPage() {
-  document.getElementById('whereShitGo').innerHTML = 
-  `<form>
+  //resets the page to what it was originally for when we hit the reset button.
+  guessCount = 1
+  document.getElementById('whereShitGo').innerHTML =
+  `<h1>Choose the Number Range!</h1> 
+  <form>
     <input type="number"
     placeholder="min"
     id="min">
@@ -73,27 +85,35 @@ function resetPage() {
   </form>`
 }
 
-let guessCount = 1
 
 function pushGuesses(event) {
-  
   event.preventDefault()
   console.log('Collecting Guesses.')
+  
+  //makes an empty array to store the guesses in
   let arrayToPush = []
   for(i=1; i<=6; i++){
+
+    //adds values to the array
     arrayToPush.push(document.getElementById(`guess${i}`).value)
+
+    //once the last index is reached, first checks if any indexes match.
     if (i === 6) {
       for(let j=0; j<=arrayToPush.length; j++) {
         for(let o=0; o<=arrayToPush.length; o++) {
           if (o===j){
+            //indexes do not match, onto another test.
             console.log('carry on')
           }
           else if (arrayToPush[j] === arrayToPush[o]){
+            //indexes do match, return before clearing guess content.
             console.log(arrayToPush[j], 'and', arrayToPush[o], 'match')
             return
           }
         }
       }
+      //clear guess content at the end, to make sure its not cleared before
+        // checking if there are identical values.
       document.getElementById(`guess1`).value = ''
       document.getElementById(`guess2`).value = ''
       document.getElementById(`guess3`).value = ''
@@ -102,29 +122,41 @@ function pushGuesses(event) {
       document.getElementById(`guess6`).value = ''
     }
   }
+
+  //post method to send my new array of numbers to the server.
   axios({
     method: 'POST',
     url: '/highorlow',
     data: {arrayToPush}
   }).then(function(response) {
     console.log("Posted Numbers to Server!");
+
+    //calls a function to get output from our server.
     callGuessList()
   })
 }
 
 function callGuessList(){
+
+  //gets a number array with 'higher than' 'lower than' 'equal'
+   // status' in order to find out if we guessed the number.
   axios({
     method: 'GET',
     url: '/highorlow'
   }).then(function(response){
     console.log('recieved', response.data)
-    renderNewRow(response.data)
-    checkIfDone(response.data)
 
+    //renders new data in a row so users can see it.
+    renderNewRow(response.data)
+
+    //checks if the number was guessed by a player
+    checkIfDone(response.data)
   })
 }
 
 function renderNewRow(data){
+
+  //sets a variable to correctly show player guess data on the DOM
   let append = `<tr><td>${guessCount}</td>`
   for(let index of data) {
     append += `
@@ -132,22 +164,30 @@ function renderNewRow(data){
       <td>${index.status}</td>`
   }
   append+=`</tr>`
+  
+  //console logs it to check it is what is expected
   console.log(append)
+
+  //adds to the DOM, and increments guess count since a round of guessing has passed
   document.getElementById('guessContent').innerHTML += append
   guessCount ++
 }
 
 function checkIfDone(data){
+  //console logs explain fairly well, loop to check if the status is 
+    //the unique one which returns when the number is the same.
   console.log('Checking if Number was met loop starting...')
   for(let index of data) {
     if (index.status === `THE NUMBER`) {
+      
+      //if the number is the same, add the resetPage button to the bottom and return.
       console.log('NUMBER FOUND!')
       document.getElementById('whereShitGo').innerHTML += '<button onclick="resetPage()">Reset</button>'
-      guessCount = 1
       return
     }
   }
   console.log('No match found.')
 }
 
+//calls onready to make sure javascript works!
 onReady()
