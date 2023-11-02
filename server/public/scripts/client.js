@@ -3,15 +3,8 @@ function onReady() {
 }
 
 function callRandom() {
-  axios({
-  method: 'GET',
-  url: '/setrand',
-}).then(function(response) {
-  console.log("Random Number Set!");
-})
-}
-
-function resetPage() {
+  min = document.getElementById('min').value
+  max = document.getElementById('max').value
   document.getElementById('whereShitGo').innerHTML =
   `<h1>YOUR GAME HERE!</h1>
 
@@ -54,10 +47,31 @@ function resetPage() {
       <td></td>
     </tr>
   </table>`
-  callRandom();
+  axios({
+    method: 'POST',
+    url: '/setrand',
+    data: {
+      value1: min,
+      value2: max
+    }
+  }).then(function(response) {
+    console.log("Random Number Set!");
+  })
+
 }
 
-
+function resetPage() {
+  document.getElementById('whereShitGo').innerHTML = 
+  `<form>
+    <input type="number"
+    placeholder="min"
+    id="min">
+    <input type="number"
+    placeholder="max"
+    id="max">
+    <button onclick="callRandom()">Values!</button>
+  </form>`
+}
 
 let guessCount = 1
 
@@ -68,17 +82,24 @@ function pushGuesses(event) {
   let arrayToPush = []
   for(i=1; i<=6; i++){
     arrayToPush.push(document.getElementById(`guess${i}`).value)
-    document.getElementById(`guess${i}`).value = ''
-  }
-  for(let i=0; i<=arrayToPush.length; i++) {
-    for(let o=0; o<=arrayToPush.length; o++) {
-      if (o===i){
-        console.log('carry on')
+    if (i === 6) {
+      for(let j=0; j<=arrayToPush.length; j++) {
+        for(let o=0; o<=arrayToPush.length; o++) {
+          if (o===j){
+            console.log('carry on')
+          }
+          else if (arrayToPush[j] === arrayToPush[o]){
+            console.log(arrayToPush[j], 'and', arrayToPush[o], 'match')
+            return
+          }
+        }
       }
-      else if (arrayToPush[i] === arrayToPush[o]){
-        console.log(arrayToPush[i], 'and', arrayToPush[o], 'match')
-        return
-      }
+      document.getElementById(`guess1`).value = ''
+      document.getElementById(`guess2`).value = ''
+      document.getElementById(`guess3`).value = ''
+      document.getElementById(`guess4`).value = ''
+      document.getElementById(`guess5`).value = ''
+      document.getElementById(`guess6`).value = ''
     }
   }
   axios({

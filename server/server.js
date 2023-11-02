@@ -15,7 +15,7 @@ app.use(express.json());
 
 // Code for Random
 
-let random = callRand();
+let random = 0;
 let allArray = [];
 
 let test = {
@@ -23,8 +23,8 @@ let test = {
   3: 'string'
 }
 
-function callRand() {
-  let rand = Math.random()*24+1
+function callRand(min, max) {
+  let rand = Math.random()*(max-min)+min
   rand = Math.round(rand)
   console.log(rand)
   return rand
@@ -76,10 +76,10 @@ app.post('/highorlow', (req,res)=> {
 
 })
 
-app.get('/setrand', (req, res) => {
+app.post('/setrand', (req, res) => {
   console.log('Request was made!')
-  random = callRand()
-  res.send('no')
+  random = callRand(req.body.value1, req.body.value2)
+  res.sendStatus(201)
 })
 
 
