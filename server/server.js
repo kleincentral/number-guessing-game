@@ -15,8 +15,6 @@ app.use(express.json());
 
 // Code for Random
 
-
-
 let random = callRand();
 let allArray = [];
 
@@ -76,6 +74,12 @@ app.post('/highorlow', (req,res)=> {
   console.log(compareValues(req.body.arrayToPush))
   res.sendStatus(201)
 
+})
+
+app.get('/setrand', (req, res) => {
+  console.log('Request was made!')
+  random = callRand()
+  res.send('no')
 })
 
 

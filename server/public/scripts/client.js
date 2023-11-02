@@ -1,6 +1,17 @@
 function onReady() {
   console.log("JavaScript is loaded!")
+}
 
+function callRandom() {
+  axios({
+  method: 'GET',
+  url: '/setrand',
+}).then(function(response) {
+  console.log("Random Number Set!");
+})
+}
+
+function resetPage() {
   document.getElementById('whereShitGo').innerHTML =
   `<h1>YOUR GAME HERE!</h1>
 
@@ -43,6 +54,7 @@ function onReady() {
       <td></td>
     </tr>
   </table>`
+  callRandom();
 }
 
 
@@ -52,7 +64,7 @@ let guessCount = 1
 function pushGuesses(event) {
   
   event.preventDefault()
-  console.log('Attempt to push.')
+  console.log('Collecting Guesses.')
   let arrayToPush = []
   for(i=1; i<=6; i++){
     arrayToPush.push(document.getElementById(`guess${i}`).value)
@@ -74,7 +86,7 @@ function pushGuesses(event) {
     url: '/highorlow',
     data: {arrayToPush}
   }).then(function(response) {
-    console.log("SUCCESS!!!");
+    console.log("Posted Numbers to Server!");
     callGuessList()
   })
 }
@@ -84,9 +96,7 @@ function callGuessList(){
     method: 'GET',
     url: '/highorlow'
   }).then(function(response){
-    console.log(response.data)
-
-    console.log(response.data[1])
+    console.log('recieved', response.data)
     renderNewRow(response.data)
     checkIfDone(response.data)
 
@@ -107,12 +117,16 @@ function renderNewRow(data){
 }
 
 function checkIfDone(data){
+  console.log('Checking if Number was met loop starting...')
   for(let index of data) {
-    if (index.status === 'THE NUMBER')
+    if (index.status === `THE NUMBER`) {
       console.log('NUMBER FOUND!')
-
+      document.getElementById('whereShitGo').innerHTML += '<button onclick="resetPage()">Reset</button>'
+      guessCount = 1
+      return
+    }
   }
-
+  console.log('No match found.')
 }
 
 onReady()
