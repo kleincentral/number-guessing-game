@@ -15,7 +15,15 @@ app.use(express.json());
 
 // Code for Random
 
+
+
 let random = callRand();
+let allArray = [];
+
+let test = {
+  name: 2,
+  3: 'string'
+}
 
 function callRand() {
   let rand = Math.random()*24+1
@@ -25,19 +33,30 @@ function callRand() {
 }
 
 function compareValues(array) {
-  let returnArray = {}
+  let count = 0
   for(let index of array) {
-    if (index > random){
-      returnArray[index] = 'higher'
+    if (index < random){
+      content = {
+        guess: index, status: 'too low'
+      }
+      allArray.push(content)
     }
-    else if (index < random) {
-      returnArray[index] = 'lower'
+    else if (index > random) {
+      content = {
+        guess: index, status: 'too high'
+      }
+      allArray.push(content)
     }
-    else{
-      returnArray[index] = 'equal'
+    else {
+      content = {
+        guess: index, status: 'THE NUMBER'
+      }
+      allArray.push(content)
     }
+    count ++
   }
-  return returnArray
+  console.log(allArray)
+  return allArray
 }
 
 
@@ -46,6 +65,8 @@ function compareValues(array) {
 
 app.get('/highorlow', (req, res) => {
   console.log('Request was made!')
+  res.send(allArray);
+  allArray=[]
 })
 
 app.post('/highorlow', (req,res)=> {
@@ -53,6 +74,8 @@ app.post('/highorlow', (req,res)=> {
   console.log(req.body)
   console.log(req.body.arrayToPush)
   console.log(compareValues(req.body.arrayToPush))
+  res.sendStatus(201)
+
 })
 
 
